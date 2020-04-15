@@ -1,0 +1,355 @@
+<!doctype html>
+<html>
+
+<head>
+
+    <!-- Basic -->
+    <meta charset="UTF-8">
+
+    <title>Test Suggar</title>
+    <!-- SEO Meta -->
+    <meta name="keywords" content="" />
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!--Library CSS -->
+    <link rel="stylesheet" href="https://raw.githubusercontent.com/mdbootstrap/perfect-scrollbar/master/css/perfect-scrollbar.css" media="all">
+   
+    <!-- css-->
+    <link rel="stylesheet" href="fonts/font-awesome-4.7/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/custom.css" media="all">
+   
+  
+    <!-- jquery -->
+    <script src="js/jquery-3.4.1.min.js"></script>
+
+</head>
+
+<body>
+    <header id="header">
+        <div class="topbar">
+            <div class="container">
+                <div class="topbar__wrap">
+                    <h1 class="title">DASHBOARD</h1>
+                    <div class="create__box">
+                        <input type="text" class="f-control" placeholder="New To-do List" id="js-ip-list-name" required>
+                        <button type="button" class="btn btn-primary" id="js-add-list">Create</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main id="main">
+        <div class="container">
+            <div class="todo__wrap" id="js-todo-container">
+                <div class="todo__item__wrap" data-list-id="1">
+                    <div class="todo__item">
+                        <div class="todo__header">
+                            <h3 class="todo__header-title">Movies to watch</h3>
+                            <div class="todo__header-actions">
+                                <button type="button" class="btn btn-action btn-toggle-add"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                <button type="button" class="btn btn-action btn-delete-list"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                            </div>
+                            <div class="todo__header__edit">
+                                <input type="text" class="f-control" value="Movies to watch" placeholder="Item name">
+                                  <div class="todo__header-actions">
+                                    <button type="button" class="btn btn-action btn-save-title"><i class="fa fa-save" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="todo__body">
+                            <div class="todo__addnew">
+                                <input type="text" class="f-control" name="todoName" placeholder="New item">
+                            </div>
+                            <ul class="todo__lists">
+                         
+                            </ul>
+                        </div>
+                    </div>
+                  
+                </div>
+               
+            </div>
+        </div>
+     
+    </main>
+
+    <!-- Libary script -->
+    <script
+    src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+    integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+    crossorigin="anonymous"></script>
+   
+    <!-- Custom script -->
+    <script>
+        const randomId = () => Date.now(); // Demo unique number id
+
+
+        (function(){
+            'use strict';
+            let todoLists;
+            const todoContainer = document.getElementById('js-todo-container');
+            const inputListName = document.getElementById('js-ip-list-name');
+            const btnAddList = document.getElementById('js-add-list');
+
+            const sortListAlphabe = (list) => {
+                let sorting,mustSwitch,items,i;
+                sorting = true;
+                while(sorting){
+                    sorting = false;
+                    items = list.getElementsByTagName('li');
+                    for(i = 0; i< (items.length - 1);i++){
+                        mustSwitch = false;
+                        let curText = items[i].querySelector('.custom-checkbox span').textContent;
+                        let nextText = items[i + 1].querySelector('.custom-checkbox span').textContent;
+                        if(curText.toLowerCase() > nextText.toLowerCase()){
+                            mustSwitch = true;
+                            break;
+                        }
+                    }
+                    if(mustSwitch){
+                        items[i].parentNode.insertBefore(items[i + 1],items[i]);
+                        sorting = true;
+                    }
+                }
+               
+            }
+
+            const initSortable = (todo) =>{
+                //Use Jquery UI sortable
+                $(todo).sortable({
+                        containment:'#js-todo-container',
+                        helper:'clone',
+                        connectWith: '.todo__lists',
+                        appendTo:'body',
+                        delay:150,
+                        tolerance:'pointer',
+                        stop:function(evt,ui){
+                            let $newList = ui.item.closest('.todo__lists');
+                            if($newList){
+                                //Sort new list after dropped element
+                                sortListAlphabe($newList.get(0));
+                            }
+                          
+                        }
+                    }).disableSelection();
+            }
+           
+            const createElementFromHTML = html =>{
+                const element = document.createElement('div');
+                element.innerHTML = html;
+                if(element.childElementCount > 1){
+                    return element;
+                }
+                return element.firstElementChild;
+            }
+
+            const getTemplateElement = (title = '') =>{
+                const template = `
+                <div class="todo__item__wrap" data-list-id="list-${randomId()}">
+                    <div class="todo__item">
+                        <div class="todo__header">
+                            <h3 class="todo__header-title">${title}</h3>
+                            <div class="todo__header-actions">
+                                <button type="button" class="btn btn-action btn-toggle-add"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                <button type="button" class="btn btn-action btn-delete-list"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                            </div>
+                            <div class="todo__header__edit">
+                                <input type="text" class="f-control" value="${title}" placeholder="Item name">
+                                  <div class="todo__header-actions">
+                                    <button type="button" class="btn btn-action btn-save-title"><i class="fa fa-save" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="todo__body">
+                            <div class="todo__addnew show">
+                                <input type="text" class="f-control" name="todoName" placeholder="New item">
+                            </div>
+                            <ul class="todo__lists">
+                               
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                `;
+                return createElementFromHTML(template);
+            } 
+
+            const addList = () =>{
+                //add list item
+                const title = inputListName.value.trim();
+                if(title === ''){
+                    alert('Vui lòng nhập tên list');
+                    return;
+                }
+                const list = getTemplateElement(title);
+                const todo = list.querySelector('.todo__lists')
+                todoContainer.appendChild(list);
+                inputListName.value = "";
+                initSortable(todo);
+            }
+            
+            const removeList = (target) =>{
+                //remove list item
+                try{
+                    todoContainer.removeChild(target.closest('.todo__item__wrap'));
+                }catch (err){
+                    console.log(err)
+                }
+            }
+
+            const getTodoElement = (title) =>{
+                const template = `  <li class="todo" data-todo-id="${randomId()}">
+                                    <div class="todo-checkbox">
+                                        <div class="custom-checkbox">
+                                            <label>
+                                                <input type="checkbox" class="hidden">
+                                                <span>${title}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <a href="javascript:;" class="todo-delete"><i class="fa fa-times"></i></a>
+                                </li>`;
+                return createElementFromHTML(template)
+            }
+
+            const addTodo = (target) =>{
+                const input = target.getElementsByTagName('input')[0];
+                let value = input.value.trim();
+
+                if(value === '') return;
+
+                const todoItem = getTodoElement(input.value);
+                todoLists = target.nextElementSibling;
+                todoLists.appendChild(todoItem);
+                input.value = "";
+
+                initSortable(todoLists);
+                sortListAlphabe(todoLists);
+            }
+
+            const removeTodo = target =>{
+                try{
+                    todoLists = target.closest('.todo__lists');
+                    todoLists.removeChild(target.closest('.todo'));
+                }catch (err){
+                    console.log(err)
+                }
+            }
+
+            const toggleAddBox = (target) =>{
+                const todo = target.closest('.todo__item');
+                const toggleBox = todo.querySelector('.todo__addnew');
+                const input = toggleBox.getElementsByTagName('input')[0];
+                toggleBox.classList.toggle('show');
+                input.focus();
+            }
+
+            const toggleEditForm = (target) =>{
+                target.closest('.todo__header').classList.toggle('editting');
+            }
+
+            const saveTitle = (target) =>{
+                let inputText;
+                try {
+                    const header = target.closest('.todo__header');
+                    let titleEle = header.querySelector('.todo__header-title');
+                    inputText = header.querySelector('.todo__header__edit input');
+                    if(inputText.value === ''){
+                        alert('Tiêu đề phải có ít nhất 1 ký tự !!');
+                        inputText.focus(); //Focus again
+                    }
+                    else{
+                        titleEle.textContent = inputText.value;
+                        inputText.setAttribute('value',inputText.value); //Update value attribute in DOM
+                        toggleEditForm(target);
+                    }
+               
+
+                } catch (error) {
+                    console.log(error);
+                }
+            
+            }
+
+            //Trigger Event 
+            btnAddList.addEventListener('click',addList);
+
+            let listTodos = document.getElementsByClassName('todo__lists');
+            [...listTodos].map(todo =>{
+                initSortable(todo);
+                sortListAlphabe(todo);
+            })
+            
+            //Dynamic Trigger Event 
+            document.addEventListener('click', function(e){
+                for (let target = e.target; target && target != this; target = target.parentNode) {
+                    if (target.matches('.btn-toggle-add')) {
+                        toggleAddBox.call(target, target);
+                        break;
+                    }
+                    if(target.matches('.btn-delete-list')){
+                        removeList.call(target,target);
+                        break;
+                    }
+                    if(target.matches('.todo-delete')){
+                        removeTodo.call(target,target);
+                    }
+                    if(target.matches('.todo__header-title')){
+                        toggleEditForm.call(target,target);
+                    }
+                    if(target.matches('.btn-save-title')){
+                        saveTitle.call(target,target);
+                    }
+                }
+            }, false);
+
+            document.addEventListener('keydown', function(e){
+                for (let target = e.target; target && target != this; target = target.parentNode) {
+                    if (target.matches('.todo__addnew')) {
+                        switch(e.key){
+                            case 'Enter':{
+                                //Add todo item
+                                addTodo.call(target,target);
+                                break;
+                            }
+                            case 'Escape':{
+                                toggleAddBox.call(target,target);
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }, false);
+
+         
+
+            window.getOpensItems = function(){
+                let todoCollects = [];
+                [...listTodos].map(todo =>{
+                    let openItems = [], listItem, listName;
+                    listItem = todo.closest('.todo__item__wrap');
+                    listName = listItem.getElementsByClassName('todo__header-title')[0].textContent;
+                    [...todo.children].map(child => {
+                        if(child.getElementsByTagName('input')[0].checked){
+                            openItems.push(child.getElementsByTagName('span')[0].textContent);
+                        }
+                        return;
+                    });
+                    const listObj = {
+                        name:listName,
+                        openItems
+                    }
+                    todoCollects.push(listObj);
+                });
+
+                return todoCollects;
+            }
+        })();
+    </script>
+</body>
+</htmls

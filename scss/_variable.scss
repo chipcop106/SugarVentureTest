@@ -1,0 +1,95 @@
+@charset "utf-8";
+//
+//VARIABLE :: BEGIN
+//
+$main-w: 1200px;
+$tb-w: 992px;
+$mb-w: 600px;
+$primary-color: #356A94;
+
+//
+//VARIABLE :: END
+//
+//
+//MIXIN :: BEGIN
+//
+@mixin placeholder {
+    &::-webkit-input-placeholder {
+        @content
+    }
+    &:-moz-placeholder {
+        @content
+    }
+    &::-moz-placeholder {
+        @content
+    }
+    &:-ms-input-placeholder {
+        @content
+    }
+}
+
+@mixin box-shadow($shadow...) {
+    -webkit-box-shadow: $shadow; // iOS <4.3 & Android <4.1
+    box-shadow: $shadow;
+}
+
+@mixin gradientbg() {
+    background: $primary-color;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(45deg, #008b49, $primary-color);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(45deg, #008b49, $primary-color);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+@mixin box-shadow($opacity) {
+    -webkit-box-shadow: 0px 12px 30px 4px rgba(0, 0, 0, $opacity);
+    -moz-box-shadow: 0px 12px 30px -4px rgba(0, 0, 0, $opacity);
+    box-shadow: 0px 12px 30px 4px rgba(0, 0, 0, $opacity);
+}
+
+@mixin coverbg($url) {
+    background: url($url) no-repeat center center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    -ms-background-size: cover;
+    background-size: cover;
+}
+
+@mixin transition($s) {
+    -webkit-transition: all $s ease-in-out;
+    -moz-transition: all $s ease-in-out;
+    -o-transition: all $s ease-in-out;
+    -ms-transition: all $s ease-in-out;
+    transition: all $s ease-in-out;
+}
+
+@mixin border-radius($r) {
+    -webkit-border-radius: $r;
+    -moz-border-radius: $r;
+    -o-border-radius: $r;
+    -ms-border-radius: $r;
+    border-radius: $r;
+}
+
+@mixin media($point) {
+    @media screen and (max-width: $point) {
+        @content;
+    }
+}
+
+//
+//MIXIN :: END
+//
+%clear {
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    &:before {
+        display: table;
+        content: " ";
+    }
+}

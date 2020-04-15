@@ -1,0 +1,18 @@
+{
+    "name": "dashforge",
+    "version": "1.0.0",
+    "description": "Responsive Bootstrap 4 Dashboard Template",
+    "main": "index.php",
+    "author": "ThemePixels",
+    "devDependencies": {
+        "browser-sync": "^2.26.3",
+        "gulp": "^3.9.1",
+        "gulp-clean-css": "^3.9.2",
+        "gulp-connect-php": "^1.0.3",
+        "gulp-npm-dist": "^1.0.2",
+        "gulp-rename": "^1.2.2",
+        "gulp-sass": "^3.1.0",
+        "gulp-sourcemaps": "^2.6.5"
+    },
+    "dependencies": {}
+}
